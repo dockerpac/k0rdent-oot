@@ -7,6 +7,9 @@ spec:
   replicas: {{ .Values.controlPlaneNumber }}
   version: {{ .Values.k0s.version }}
   k0sConfigSpec:
+    {{- if .Values.singleArtifactSource.enabled }}
+    downloadURL: "{{ .Values.singleArtifactSource.k0sURL }}/k0s-{{ .Values.k0s.version }}-amd64"
+    {{- end }}
     preStartCommands:
     {{- with .Values.controlPlane.preStartCommands }}
       {{- toYaml . | nindent 6 }}
@@ -49,7 +52,25 @@ spec:
               FELIX_VXLANPORT: "{{ .Values.k0s.network.vxlanPort }}"
               FELIX_ALLOWVXLANPACKETSFROMWORKLOADS: "true"
         images:
+        {{- if .Values.singleArtifactSource.enabled }}
+          metricsserver:
+            image: "{{ .Values.singleArtifactSource.registry}}/metrics-server"
+          kubeproxy:
+            image: "{{ .Values.singleArtifactSource.registry}}/kube-proxy"
+          coredns:
+            image: "{{ .Values.singleArtifactSource.registry}}/coredns"
+          pause:
+            image: "{{ .Values.singleArtifactSource.registry}}/pause"
+          calico:
+            cni:
+              image: "{{ .Values.singleArtifactSource.registry}}/calico-cni"
+            node:
+              image: "{{ .Values.singleArtifactSource.registry}}/calico-node"
+            kubecontrollers:
+              image: "{{ .Values.singleArtifactSource.registry}}/calico-kube-controllers"
+        {{- else }}
           repository: "{{ .Values.k0s.images.repository }}"
+        {{- end }}
   machineTemplate:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1alpha1

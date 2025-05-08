@@ -132,3 +132,8 @@ cloudControllerManager:
 machineHealthCheck:
   enabled: false
   maxUnhealthy: 40%
+
+singleArtifactSource:
+  enabled: false
+  registry: registry.mirantis.com/k0rdent-enterprise
+  k0sURL: https://get.mirantis.com/k0rdent-enterprise/v0.1.0
