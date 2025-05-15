@@ -136,9 +136,15 @@ spec:
   config: '{
         "cniVersion": "0.3.1",
         "name": "bridge-1560",
-        "type": "bridge",
-        "bridge": "br1560",
-        "ipam": {}
+          "plugins": [
+           {
+             "type": "bridge",
+             "bridge": "br1560"
+           },
+           {
+             "type": "tuning"
+           }
+          ]
         }'
 EOF
 ```
